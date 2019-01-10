@@ -1,5 +1,22 @@
-import { loginByUsername, registerUser, logout, getUserInfo, sendCode, resetPassword, editUserInfo } from '@/api/login'
-import { getToken, setToken, removeToken, getName, setName, removeName, setUser } from '@/utils/auth'
+import {
+    loginByUsername,
+    registerUser,
+    logout,
+    getUserInfo,
+    sendCode,
+    resetPassword,
+    editUserInfo,
+    get_user_message,
+} from '@/api/login'
+import {
+    getToken,
+    setToken,
+    removeToken,
+    getName,
+    setName,
+    removeName,
+    setUser
+} from '@/utils/auth'
 
 const user = {
     state: {
@@ -104,12 +121,8 @@ const user = {
         // 获取用户信息
         GetUserInfo({ commit, state }) {
             return new Promise((resolve, reject) => {
-                if (!state.token) {
-                    commit('SET_TOKEN', getToken())
-                }
-                if (!state.name) {
-                    commit('SET_NAME', getName())
-                }
+                commit('SET_TOKEN', getToken())
+                commit('SET_NAME', getName())
                 getUserInfo(state.token, state.name).then(response => {
                     if (!response) { // 由于mockjs 不支持自定义状态码只能这样hack
                         reject('error')
@@ -141,6 +154,7 @@ const user = {
                     setUser(JSON.stringify(data))
                     resolve(response)
                 }).catch(error => {
+                    console.log("sdsdfds")
                     reject(error)
                 })
             })
@@ -149,12 +163,8 @@ const user = {
         // 登出
         LogOut({ commit, state }) {
             return new Promise((resolve, reject) => {
-                if (!state.token) {
-                    commit('SET_TOKEN', getToken())
-                }
-                if (!state.name) {
-                    commit('SET_NAME', getName())
-                }
+                commit('SET_TOKEN', getToken())
+                commit('SET_NAME', getName())
                 logout(state.token, state.name).then(() => {
                     commit('SET_TOKEN', '')
                     commit('SET_NAME', '')
@@ -170,12 +180,6 @@ const user = {
         // 前端 登出
         FedLogOut({ commit, state }) {
             return new Promise(resolve => {
-                if (!state.token) {
-                    commit('SET_TOKEN', getToken())
-                }
-                if (!state.name) {
-                    commit('SET_NAME', getName())
-                }
                 commit('SET_TOKEN', '')
                 commit('SET_NAME', '')
                 removeToken()
@@ -251,6 +255,19 @@ const user = {
             return new Promise((resolve, reject) => {
                 editUserInfo(user_info).then(response => {
                     resolve()
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 获取用户message
+         */
+        get_user_message({ commit, state }) {
+            return new Promise((resolve, reject) => {
+                get_user_message().then(response => {
+                    resolve(response)
                 }).catch(error => {
                     reject(error)
                 })

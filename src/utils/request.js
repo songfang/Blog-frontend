@@ -1,7 +1,7 @@
 import axios from 'axios'
-import { Message } from 'element-ui'
+import { Message, MessageBox } from 'element-ui'
 import store from '@/store'
-import { getToken, getName } from '@/utils/auth'
+import { getToken, getName, getCsrfToken } from '@/utils/auth'
 
 // create an axios instance
 const service = axios.create({
@@ -23,6 +23,7 @@ service.interceptors.request.use(
         } else {
             config.headers['X-Name'] = getName()
         }
+        config.headers['X-CSRFToken'] = getCsrfToken()
         return config
     },
     error => {
@@ -107,7 +108,7 @@ service.interceptors.response.use(
                 })
             } else if (res.code === 50009 || res.code === 50010 || res.code === 50012 || res.code === 50011) {
                 // 50009: token 为空;50010:非法的token; 50012:其他客户端登录了;  50011:Token 过期了;
-                this.$message.confirm(
+                MessageBox.confirm(
                     '你已被登出，可以取消继续留在该页面，或者重新登录',
                     '确定登出', {
                         confirmButtonText: '重新登录',
@@ -118,7 +119,11 @@ service.interceptors.response.use(
                     store.dispatch('FedLogOut').then(() => {
                         location.reload() // 为了重新实例化vue-router对象 避免bug
                     })
-                })
+                }).catch(() => {
+                    store.dispatch('FedLogOut').then(() => {
+                        location.reload() // 为了重新实例化vue-router对象 避免bug
+                    })
+                });
             } else if (res.code === 50013) {
                 // 50013 请求参数错误错误
                 Message({
@@ -162,11 +167,11 @@ service.interceptors.response.use(
     },
     error => {
         console.log('err' + error) // for debug
-        Message({
-            message: error.message,
-            type: 'error',
-            duration: 5 * 1000
-        })
+            // Message({
+            //     message: error.message,
+            //     type: 'error',
+            //     duration: 5 * 1000
+            // })
         return Promise.reject(error)
     }
 )

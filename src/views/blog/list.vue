@@ -10,7 +10,7 @@
                     </el-input>
                 </div>
                 <div style="padding: 5px;">
-                    <div v-for="blog in filterbloglist" :key="blog.name">
+                    <div v-for="blog in filterbloglist" :key="blog.id">
                         <el-card class="box-card" :body-style="{ padding: '10px' }">
                             <div class="blog-message">
                                 <div class="clearfix">

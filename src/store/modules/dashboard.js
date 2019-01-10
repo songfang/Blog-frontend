@@ -4,6 +4,7 @@ import {
     get_blog_week_data,
     get_blog_tags_data,
     get_blog_domain_data,
+    get_version_list,
 } from '@/api/dashboard'
 import {
     getToken,
@@ -90,11 +91,29 @@ const dashboard = {
             })
         },
 
+        /**
+         * 获取dashboard学习领域数据
+         */
         get_blog_domain_data({ commit, state }) {
             commit('SET_TOKEN', getToken())
             commit('SET_NAME', getName())
             return new Promise((resolve, reject) => {
                 get_blog_domain_data(state.token, state.name).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 获取dashboard最新的发布版本情况
+         */
+        get_version_list({ commit, state }) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_version_list(state.token, state.name).then(response => {
                     resolve(response)
                 }).catch(error => {
                     reject(error)

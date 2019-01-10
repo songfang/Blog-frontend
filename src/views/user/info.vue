@@ -6,9 +6,9 @@
                 <el-card :body-style="{ padding: '10px' }" shadow="hover">
                 <div slot="header" class="clearfix">
                     <span>个人信息</span>
-                    <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" type="text">编辑</el-button>
+                    <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" v-if="userform.name === this.$store.getters.name" type="text">编辑</el-button>
                 </div>
-                <img :src=userform.avatar class="image">
+                <img :src="userform.avatar" class="image">
                 <div style="padding: 14px;">
                     <p class="userinfo" style="font-weight: bold;font-size: medium;">{{ userform.alias }}</p>
                     <p class="userinfo"><i class="el-icon-location">  {{ userform.country }}</i></p>
@@ -34,7 +34,7 @@
                     <div class="usercenter">
                         <div class="userbtn">
                             <span class="user-svg-container"><svg-icon icon-class="article" class="icon"/></span>
-                            <p class="userinfo">196篇文章</p>
+                            <p class="userinfo">{{ userform.blog_count }}篇文章</p>
                         </div>
                         <div class="userbtn">
                             <span class="user-svg-container"><svg-icon icon-class="watch" class="icon"/></span>
@@ -59,84 +59,33 @@
             <div slot="header" class="clearfix">
                 <span>最新动态</span>
             </div>
-            <el-card class="box-card">
-                <div class="user-message">
-                    <div class="user-img">
-                        <img src="http://element.eleme.io/static/hamburger.50e4091.png" class="img-circle">
-                    </div>
-                    <div class="clearfix">
-                        <div class="user-content">
-                            <div class="user-content-header">
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo">196篇文章</span>
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo-time" style="font-weight: bold;font-size: small;">1天前</span>
-                            </div>
-                            <div class="user-content-body">
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                            </div>
-                            <div class="user-content-footer">
-                                <span class="thumbs-up-container" size="mini" @click="thumbsup"><svg-icon icon-class="thumbs-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="collectup"><svg-icon icon-class="collect-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="commentup"><svg-icon icon-class="comment-up" class="icon"/></span>
+            <div v-for="message in message_list" :key="message.id">
+                <el-card class="box-card">
+                    <div class="user-message">
+                        <div class="user-img">
+                            <img :src="userform.avatar" class="img-circle">
+                        </div>
+                        <div class="clearfix">
+                            <div class="user-content">
+                                <div class="user-content-header">
+                                    <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.operator }}</span>
+                                    <span class="userinfo">{{ message.action }}</span>
+                                    <span class="userinfo" v-if="message.target" style="font-weight: bold;font-size: small;">{{ message.target }}</span>
+                                    <span class="userinfo-time" style="font-weight: bold;font-size: small;">{{ message.created_time }}</span>
+                                </div>
+                                <div class="user-content-body">
+                                    <code class="userinfo" v-if="message.target !== '' && message.image_list.length < 1">
+                                        <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_old }}</span>
+                                        <span class="userinfo">  变更为  </span>
+                                        <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_new }}</span>
+                                    </code>
+                                    <img :src="item.value" v-for="item in message.image_list" :key="item.id"  class="feed-photo">
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            </el-card>
-            <el-card class="box-card">
-                <div class="user-message">
-                    <div class="user-img">
-                        <img src="http://element.eleme.io/static/hamburger.50e4091.png" class="img-circle">
-                    </div>
-                    <div class="clearfix">
-                        <div class="user-content">
-                            <div class="user-content-header">
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo">196篇文章</span>
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo-time" style="font-weight: bold;font-size: small;">1天前</span>
-                            </div>
-                            <div class="user-content-body">
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                            </div>
-                            <div class="user-content-footer">
-                                <span class="thumbs-up-container" size="mini" @click="thumbsup"><svg-icon icon-class="thumbs-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="collectup"><svg-icon icon-class="collect-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="commentup"><svg-icon icon-class="comment-up" class="icon"/></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </el-card> 
-            <el-card class="box-card">
-                <div class="user-message">
-                    <div class="user-img">
-                        <img src="http://element.eleme.io/static/hamburger.50e4091.png" class="img-circle">
-                    </div>
-                    <div class="clearfix">
-                        <div class="user-content">
-                            <div class="user-content-header">
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo">196篇文章</span>
-                                <span class="userinfo" style="font-weight: bold;font-size: small;">我的名字</span>
-                                <span class="userinfo-time" style="font-weight: bold;font-size: small;">1天前</span>
-                            </div>
-                            <div class="user-content-body">
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                                <p class="userinfo">会点前端技术，div+css啊，jQuery之类的，不是很精；热爱生活，热爱互联网，热爱新技术；有一个小的团队，在不断的寻求新的突破。</p>
-                            </div>
-                            <div class="user-content-footer">
-                                <span class="thumbs-up-container" size="mini" @click="thumbsup"><svg-icon icon-class="thumbs-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="collectup"><svg-icon icon-class="collect-up" class="icon"/></span>
-                                <span class="thumbs-up-container" size="mini" @click="commentup"><svg-icon icon-class="comment-up" class="icon"/></span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </el-card> 
+                </el-card> 
+            </div>
         </el-card>
       </div>
       <el-dialog title="个人资料" :visible.sync="usereditdialog" center width="50%">
@@ -210,15 +159,19 @@ export default {
           first_name: "",
           last_name: "",
           last_login: "",
+          blog_count: 0,
+          image_list: []
       },
       usertable: [],
       usereditdialog: false,
       uploadloading: false,
       usereditloading: false,
+      message_list: [],
     }
   },
   created(){
       this.getuserinfo();
+      this.get_user_message()
   },
   watch: {
     $route: {
@@ -319,6 +272,62 @@ export default {
             this.$router.go(0)
         })
     },
+    get_user_message(){
+        this.$store.dispatch('get_user_message').then(res => {
+            res.data.forEach(items => {
+                let action = ''
+                if(items.action === 'add'){
+                    action = '添加'
+                }else if(items.action === 'edit'){
+                    action = '编辑'
+                }else if(items.action === 'delete'){
+                    action = '删除'
+                }else if(items.action === 'view'){
+                    action = '浏览'
+                }else if(items.action === 'resetpassword'){
+                    action = '重置密码'
+                }else if(items.action === 'register'){
+                    action = '注册'
+                }else if(items.action === 'login'){
+                    action = '登录'
+                }else if(items.action === 'logout'){
+                    action = '注销'
+                }else if(items.action === 'thumbsup'){
+                    action = '点赞'
+                }else if(items.action === 'collect'){
+                    action = '收藏'
+                }else if(items.action === 'comment'){
+                    action = '评论'
+                }else if(items.action === 'upload'){
+                    action = '上传'
+                }else if(items.action === 'publish'){
+                    action = '发布'
+                }else if(items.action === 'rollback'){
+                    action = '撤回'
+                }
+                let image_list = []
+                if(items.action === 'upload'){
+                    let data = {"id": items.id, "value": items.msg_new.split(',')}
+                    image_list.push(data)
+                }
+                let data = {
+                    "id": items.id, 
+                    "operator": items.alias, 
+                    "action": action,
+                    "target": items.target, 
+                    "msg_old": items.msg_old, 
+                    "msg_new": items.msg_new, 
+                    "updated_time": items.updated_time, 
+                    "created_time": items.created_time, 
+                    "is_successed": items.is_successed,
+                    "is_read": items.is_read,
+                    "is_running": items.is_running,
+                    "image_list": image_list,
+                }
+                this.message_list.push(data)
+            });
+        })
+    }
   }
 
 }
@@ -466,5 +475,13 @@ export default {
     width: 178px;
     height: 178px;
     display: block;
+  }
+  .feed-photo{
+    max-height: 180px;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 10px;
+    margin-right: 10px;
+    margin-bottom: 10px;
   }
 </style>

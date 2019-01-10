@@ -29,7 +29,15 @@
 
     <el-row :gutter="8">
       <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}" style="padding-right:8px;margin-bottom:30px;">
-        <transaction-table/>
+        <el-card class="box-card-component" style="margin-left:8px;" v-loading="version_loading">
+          <el-collapse v-model="activeName" accordion>
+            <div v-for="version in version_list" :key="version.id">
+                <el-collapse-item :title="version.version + '版本发布记录'" name="1">
+                  <div>{{ version.message }}</div>
+              </el-collapse-item>
+            </div>
+          </el-collapse>
+        </el-card>
       </el-col>
       <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
         <todo-list/>
@@ -38,7 +46,6 @@
         <box-card/>
       </el-col>
     </el-row>
-
   </div>
 </template>
 
@@ -49,7 +56,7 @@ import LineChart from './components/LineChart'
 import RaddarChart from './components/RaddarChart'
 import PieChart from './components/PieChart'
 import BarChart from './components/BarChart'
-import TransactionTable from './components/TransactionTable'
+import BoxVersion from './components/BoxVersion'
 import TodoList from './components/TodoList'
 import BoxCard from './components/BoxCard'
 
@@ -63,7 +70,7 @@ export default {
     RaddarChart,
     PieChart,
     BarChart,
-    TransactionTable,
+    BoxVersion,
     TodoList,
     BoxCard
   },
@@ -71,10 +78,14 @@ export default {
     return {
       line_chart_data: {},
       chart_data: {},
+      version_list: [],
+      activeName: '1',
+      version_loading: false,
     }
   },
   created(){
     this.get_blog_month_data()
+    this.get_version_list()
   },
   methods: {
     handleSetLineChartData(type) {
@@ -100,6 +111,15 @@ export default {
       }).catch((error) => {
         console.log(error)
         this.loading = false
+      })
+    },
+    get_version_list(){
+      this.version_loading = true
+      this.$store.dispatch('get_version_list').then(res => {
+        this.version_list = res.data
+        this.version_loading = false
+      }).catch((error) => {
+        console.log(error)
       })
     },
   }

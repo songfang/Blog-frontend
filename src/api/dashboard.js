@@ -85,3 +85,20 @@ export function get_blog_domain_data(token, username) {
         data: qs.stringify(params)
     })
 }
+
+export function get_version_list(token, username) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/version/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}

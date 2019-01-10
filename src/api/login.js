@@ -176,3 +176,25 @@ export function editUserInfo(data) {
         data: qs.stringify(params)
     })
 }
+
+/**
+ * 获取用户动态
+ */
+export function get_user_message() {
+    let token = getToken()
+    let username = getName()
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {};
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/users/messages/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}

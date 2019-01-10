@@ -117,7 +117,6 @@ export function uploadFiles(data) {
     params.append("username", username)
     params.append("timestamp", timestamp)
     params.append("sign", sign)
-    console.log(params)
     return request({
         url: '/users/upload/',
         method: 'post',
@@ -245,8 +244,10 @@ export function get_blog_collectup(token, username, blogid) {
     })
 }
 
+/**
+ * 收藏文章
+ */
 export function set_blog_collectup(token, username, blogid) {
-    console.log(blogid)
     let qs = require('qs')
     let timestamp = new Date().getTime().toString()
     const sign = get_sign(token, timestamp)

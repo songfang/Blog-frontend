@@ -48,3 +48,8 @@ export function setUser(value) {
 export function removeUser(UserKey) {
     return Cookies.remove(UserKey)
 }
+
+const Csrf = 'csrftoken'
+export function getCsrfToken() {
+    return Cookies.get(Csrf)
+}
