@@ -415,7 +415,7 @@ export const asyncRouterMap = [
         path: 'external-link',
         component: Layout,
         children: [{
-            path: 'https://github.com/PanJiaChen/vue-element-admin',
+            path: 'https://github.com/lm1427934400/Blog-frontend',
             meta: { title: 'externalLink', icon: 'link' }
         }]
     },
