@@ -416,7 +416,7 @@ export const asyncRouterMap = [
         component: Layout,
         children: [{
             path: 'https://github.com/lm1427934400/Blog-frontend',
-            meta: { title: 'externalLink', icon: 'link' }
+            meta: { title: '外链', icon: 'link' }
         }]
     },
 
