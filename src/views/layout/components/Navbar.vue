@@ -34,7 +34,7 @@
               首页
             </el-dropdown-item>
           </router-link>
-          <router-link class="inlineBlock" to="/user">
+          <router-link class="inlineBlock" to="/user/info">
             <el-dropdown-item>
               个人信息
             </el-dropdown-item>

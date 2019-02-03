@@ -7,6 +7,11 @@ import {
     resetPassword,
     editUserInfo,
     get_user_message,
+    get_users_list,
+    get_groups_list,
+    edit_groups,
+    del_groups,
+    add_groups,
 } from '@/api/login'
 import {
     getToken,
@@ -40,7 +45,11 @@ const user = {
         last_login: '',
         setting: {
             articlePlatform: []
-        }
+        },
+        users_list: [],
+        total: "",
+        groups_list: [],
+        groups_total: "",
     },
 
     mutations: {
@@ -97,7 +106,19 @@ const user = {
         },
         SET_LASTLOGIN: (state, last_login) => {
             state.last_login = last_login
-        }
+        },
+        SET_USERS_LIST: (state, users_list) => {
+            state.users_list = users_list
+        },
+        SET_TOTAL: (state, total) => {
+            state.total = total
+        },
+        SET_GROUPS_LIST: (state, groups_list) => {
+            state.groups_list = groups_list
+        },
+        SET_GROUPS_TOTAL: (state, total) => {
+            state.groups_total = total
+        },
     },
 
     actions: {
@@ -272,8 +293,105 @@ const user = {
                     reject(error)
                 })
             })
-        }
+        },
 
+        /**
+         * 获取所有的用户信息
+         * @param {*} param0 
+         */
+        get_users_list({ commit, state }, query) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_users_list(state.token, state.name, query).then(response => {
+                    const data = response.data
+                    const total = response.total
+                    commit('SET_USERS_LIST', data)
+                    commit('SET_TOTAL', total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 获取所有的用户组列表
+         * @param {*} param0 
+         * @param {*} query 
+         */
+        get_groups_list({ commit, state }, query) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_groups_list(state.token, state.name, query).then(response => {
+                    const data = response.data
+                    const total = response.total
+                    commit('SET_GROUPS_LIST', data)
+                    commit('SET_GROUPS_TOTAL', total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 编辑用户组
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        edit_groups({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            let name = data["name"]
+            let remark = data["remark"]
+            let id = data["id"]
+            return new Promise((resolve, reject) => {
+                edit_groups(state.token, state.name, id, name, remark).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 删除用户组
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        del_groups({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            let tags_id = data["id"]
+            return new Promise((resolve, reject) => {
+                del_groups(state.token, state.name, tags_id).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 新增用户组
+         * @param {*} param0 
+         * @param {*} groups_form 
+         */
+        add_groups({ commit, state }, groups_form) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                add_groups(state.token, state.name, groups_form).then(response => {
+                    const data = response.data
+                    commit('SET_GROUPS_LIST', data)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
 
 
     }

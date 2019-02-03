@@ -498,7 +498,6 @@ export function get_all_catalogue_list(token, username, query) {
     })
 }
 
-edit_tags
 export function edit_catalogue(token, username, catalogue_id, name, remark) {
     let qs = require('qs')
     let timestamp = new Date().getTime().toString()

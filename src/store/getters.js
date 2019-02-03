@@ -25,5 +25,6 @@ const getters = {
     catalogue: state => state.article.catalogue,
     image_uri: state => state.article.image_uri,
     comments_disabled: state => state.article.comments_disabled,
+    groups_list: state => state.user.groups_list,
 }
 export default getters

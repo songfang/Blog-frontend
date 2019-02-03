@@ -1,131 +1,132 @@
 <template>
   <div class="blog-container" v-loading.fullscreen.lock="loading">
-      <div class="blog-left">
-        <el-row>
-            <el-col :span="24">
-                <el-card :body-style="{ padding: '0px' }" shadow="hover" v-if="bloglist.length >= 1">
-                <div slot="header" class="clearfix">
-                    <span class="blogheader">文章列表</span>
-                    <el-input type="text" placeholder="请输入需要搜索的文章" v-model="search" suffix-icon="el-icon-search" class="input-with-select">
-                    </el-input>
-                </div>
-                <div style="padding: 5px;">
-                    <div v-for="blog in filterbloglist" :key="blog.id">
-                        <el-card class="box-card" :body-style="{ padding: '10px' }">
-                            <div class="blog-message">
-                                <div class="clearfix">
-                                    <div class="blog-content">
-                                        <div class="blog-content-header">
-                                            <router-link class="inlineBlock" :to="'/blog/view/' + blog.id">
-                                                <span class="bloginfo" style="font-weight: bold;font-size: large;">{{ blog.title }}</span>
-                                                <span class="bloginfo-time" style="font-weight: bold;font-size: small;">{{ blog.created_time }}</span>
-                                            </router-link>
-                                        </div>
-                                        <div class="blog-content-body">
-                                            <p class="bloginfo">{{ blog.sub_title }}</p>
-                                        </div>
-                                        <div class="blog-content-footer">
-                                            <div class="blog-content-tags">
-                                                <el-tag type="success" style="margin-right: 5px;" v-for="tag in blog.tags_list" :key="tag">{{ tag }} </el-tag>
-                                            </div>
-                                            <div class="blog-content-comments">
-                                                <div class="userbtn">
-                                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="thumbs-up" class="icon"/></span>
-                                                    <p class="userinfo">赞({{ blog.thumbsup }})</p>
+      <el-row>
+        <el-col :span="24">
+            <el-row :gutter="0">
+                <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 16}" :xl="{span: 16}">
+                    <el-card :body-style="{ padding: '0px' }" shadow="hover" v-if="bloglist.length >= 1">
+                        <div slot="header" class="clearfix">
+                            <span class="blogheader">文章列表</span>
+                            <el-input type="text" placeholder="请输入需要搜索的文章" v-model="search" suffix-icon="el-icon-search" class="input-with-select">
+                            </el-input>
+                        </div>
+                        <div style="padding: 5px;">
+                            <div v-for="blog in filterbloglist" :key="blog.id">
+                                <el-card class="box-card" :body-style="{ padding: '10px' }">
+                                    <div class="blog-message">
+                                        <div class="clearfix">
+                                            <div class="blog-content">
+                                                <div class="blog-content-header">
+                                                    <router-link class="inlineBlock" :to="'/blog/view/' + blog.id">
+                                                        <span class="bloginfo" style="font-weight: bold;font-size: large;">{{ blog.title }}</span>
+                                                        <span class="bloginfo-time" style="font-weight: bold;font-size: small;">{{ blog.created_time }}</span>
+                                                    </router-link>
                                                 </div>
-                                                <div class="userbtn">
-                                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="collect-up" class="icon"/></span>
-                                                    <p class="userinfo">收藏({{ blog.collectup }})</p>
+                                                <div class="blog-content-body">
+                                                    <p class="bloginfo">{{ blog.sub_title }}</p>
                                                 </div>
-                                                <div class="userbtn">
-                                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="mywatch" class="icon"/></span>
-                                                    <p class="userinfo">浏览({{ blog.browse }})</p>
-                                                </div>
-                                                <div class="userbtn">
-                                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="comment-up" class="icon"/></span>
-                                                    <p class="userinfo">评论({{ blog.comments }})</p>
+                                                <div class="blog-content-footer">
+                                                    <div class="blog-content-tags">
+                                                        <el-tag type="success" style="margin-right: 5px;" v-for="tag in blog.tags_list" :key="tag">{{ tag }} </el-tag>
+                                                    </div>
+                                                    <div class="blog-content-comments">
+                                                        <div class="userbtn">
+                                                            <span class="thumbs-up-container" size="mini"><svg-icon icon-class="thumbs-up" class="icon"/></span>
+                                                            <p class="userinfo">赞({{ blog.thumbsup }})</p>
+                                                        </div>
+                                                        <div class="userbtn">
+                                                            <span class="thumbs-up-container" size="mini"><svg-icon icon-class="collect-up" class="icon"/></span>
+                                                            <p class="userinfo">收藏({{ blog.collectup }})</p>
+                                                        </div>
+                                                        <div class="userbtn">
+                                                            <span class="thumbs-up-container" size="mini"><svg-icon icon-class="mywatch" class="icon"/></span>
+                                                            <p class="userinfo">浏览({{ blog.browse }})</p>
+                                                        </div>
+                                                        <div class="userbtn">
+                                                            <span class="thumbs-up-container" size="mini"><svg-icon icon-class="comment-up" class="icon"/></span>
+                                                            <p class="userinfo">评论({{ blog.comments }})</p>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
+                                </el-card>
                             </div>
-                        </el-card>
-                    </div>
+                        </div>
+
+                        <el-pagination class="pagination-container"
+                            @size-change="handleSizeChange"
+                            @current-change="handleCurrentChange"
+                            :current-page="currentPage"
+                            :page-sizes="[10, 20, 50, 100]"
+                            :page-size="listQuery.limit"
+                            layout="total, sizes, prev, pager, next, jumper"
+                            :total="total">
+                        </el-pagination>
+                    </el-card>
+                </el-col>
+            <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 8}" :xl="{span: 8}">
+            <el-card class="box-card" v-if="bloglist.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
+                <div slot="header" class="clearfix">
+                    <span>TOP文章</span>
                 </div>
-
-                <el-pagination class="pagination-container"
-                    @size-change="handleSizeChange"
-                    @current-change="handleCurrentChange"
-                    :current-page="currentPage"
-                    :page-sizes="[10, 20, 50, 100]"
-                    :page-size="listQuery.limit"
-                    layout="total, sizes, prev, pager, next, jumper"
-                    :total="total">
-                </el-pagination>
-
-                </el-card>
-            </el-col>
-        </el-row>
-      </div>
-      <div class="blog-right">
-        <el-card class="box-card" v-if="bloglist.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
-            <div slot="header" class="clearfix">
-                <span>TOP文章</span>
-            </div>
-            <div v-for="blog in blogtoplist" :key="blog.name">
-                <el-card class="box-card">
-                    <div class="blog-message">
-                        <div class="clearfix">
-                            <div class="blog-content">
-                                <div class="blog-content-header">
-                                    <router-link class="inlineBlock" :to="'/blog/view/' + blog.id">
-                                        <span class="bloginfo" style="font-weight: bold;font-size: large;">{{ blog.title }}</span>
-                                    </router-link>
-                                </div>
-                                <div class="blog-content-body">
-                                    <p class="bloginfo">{{ blog.sub_title }}</p>
-                                </div>
-                                <div class="blog-content-footer">
-                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="thumbs-up" class="icon"/>{{ blog.thumbsup }}</span>
-                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="collect-up" class="icon"/>{{ blog.collectup }}</span>
-                                    <span class="thumbs-up-container" size="mini"><svg-icon icon-class="mywatch" class="icon"/>{{ blog.browse }}</span>
+                <div v-for="blog in blogtoplist" :key="blog.name">
+                    <el-card class="box-card">
+                        <div class="blog-message">
+                            <div class="clearfix">
+                                <div class="blog-content">
+                                    <div class="blog-content-header">
+                                        <router-link class="inlineBlock" :to="'/blog/view/' + blog.id">
+                                            <span class="bloginfo" style="font-weight: bold;font-size: large;">{{ blog.title }}</span>
+                                        </router-link>
+                                    </div>
+                                    <div class="blog-content-body">
+                                        <p class="bloginfo">{{ blog.sub_title }}</p>
+                                    </div>
+                                    <div class="blog-content-footer">
+                                        <span class="thumbs-up-container" size="mini"><svg-icon icon-class="thumbs-up" class="icon"/>{{ blog.thumbsup }}</span>
+                                        <span class="thumbs-up-container" size="mini"><svg-icon icon-class="collect-up" class="icon"/>{{ blog.collectup }}</span>
+                                        <span class="thumbs-up-container" size="mini"><svg-icon icon-class="mywatch" class="icon"/>{{ blog.browse }}</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
+                    </el-card>
+                </div>
+            </el-card>
+            <el-card class="box-card" v-if="catalogue_list.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
+                <div slot="header" class="clearfix">
+                    <router-link class="inlineBlock" :to="'/blog/catalogue/'">
+                        <span>目录列表</span>
+                    </router-link>
+                </div>
+                <el-card class="box-card">
+                    <div class="blog-message">
+                        <ul id="v-for-object" class="catalogue-container">
+                            <li  v-for="catalogue in catalogue_list" :key="catalogue">
+                                <el-tag type="warning" style="margin-bottom: 5px;">{{ catalogue }} </el-tag>
+                            </li>
+                        </ul>
                     </div>
                 </el-card>
-            </div>
-        </el-card>
-        <el-card class="box-card" v-if="catalogue_list.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
-            <div slot="header" class="clearfix">
-                <router-link class="inlineBlock" :to="'/blog/catalogue/'">
-                    <span>目录列表</span>
-                </router-link>
-            </div>
-            <el-card class="box-card">
-                <div class="blog-message">
-                    <ul id="v-for-object" class="catalogue-container">
-                        <li  v-for="catalogue in catalogue_list" :key="catalogue">
-                            <el-tag type="warning" style="margin-bottom: 5px;">{{ catalogue }} </el-tag>
-                        </li>
-                    </ul>
-                </div>
             </el-card>
-        </el-card>
-        <el-card class="box-card" v-if="tags_list.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
-            <div slot="header" class="clearfix">
-                <router-link class="inlineBlock" :to="'/blog/tags/'">
-                    <span>TAGS列表</span>
-                </router-link>
-            </div>
-            <el-card class="box-card">
-                <div class="blog-message">
-                    <el-tag type="success" style="margin-right: 5px;margin-bottom: 5px;" v-for="tag in tags_list" :key="tag">{{ tag }} </el-tag>
+            <el-card class="box-card" v-if="tags_list.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
+                <div slot="header" class="clearfix">
+                    <router-link class="inlineBlock" :to="'/blog/tags/'">
+                        <span>TAGS列表</span>
+                    </router-link>
                 </div>
+                <el-card class="box-card">
+                    <div class="blog-message">
+                        <el-tag type="success" style="margin-right: 5px;margin-bottom: 5px;" v-for="tag in tags_list" :key="tag">{{ tag }} </el-tag>
+                    </div>
+                </el-card>
             </el-card>
-        </el-card>
-      </div>
+            </el-col>
+            </el-row>
+        </el-col>
+      </el-row>
   </div>
 </template>
 
@@ -244,7 +245,7 @@ export default {
 <style>
 .blog-container{
     margin: 10px;
-    background-color: #676a6c; 
+    background-color: #e7eaec; 
 }
 .blog-left{
     width: 70%;

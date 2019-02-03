@@ -44,11 +44,6 @@ service.interceptors.response.use(
     response => {
         const res = response.data
         if (res.code !== 20000) {
-            Message({
-                message: res.message,
-                type: 'error',
-                duration: 5 * 1000
-            })
 
             if (res.code === 50001) {
                 // 50001 用户名为空
@@ -119,11 +114,7 @@ service.interceptors.response.use(
                     store.dispatch('FedLogOut').then(() => {
                         location.reload() // 为了重新实例化vue-router对象 避免bug
                     })
-                }).catch(() => {
-                    store.dispatch('FedLogOut').then(() => {
-                        location.reload() // 为了重新实例化vue-router对象 避免bug
-                    })
-                });
+                }).catch(() => {});
             } else if (res.code === 50013) {
                 // 50013 请求参数错误错误
                 Message({
@@ -156,6 +147,13 @@ service.interceptors.response.use(
                 // 50017 catalogue已经存在
                 Message({
                     message: '目录已经存在！',
+                    type: 'error',
+                    duration: 5 * 1000
+                })
+            } else if (res.code === 50018) {
+                // 50018 groups已经存在
+                Message({
+                    message: '用户组已经存在！',
                     type: 'error',
                     duration: 5 * 1000
                 })
