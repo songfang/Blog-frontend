@@ -102,3 +102,25 @@ export function get_version_list(token, username) {
         data: qs.stringify(params)
     })
 }
+
+/**
+ * 获取位置统计信息
+ * @param {*} token 
+ * @param {*} username 
+ */
+export function get_location_info(token, username) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/blogs/countlocationinfo/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}

@@ -1,60 +1,58 @@
 <template>
   <div class="user-container" v-loading.fullscreen.lock="loading">
-      <div class="user-left">
-        <el-row>
-            <el-col :span="24">
-                <el-card :body-style="{ padding: '10px' }" shadow="hover">
-                <div slot="header" class="clearfix">
-                    <span>个人信息</span>
-                    <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" v-if="userform.name === this.$store.getters.name" type="text">编辑</el-button>
+    <el-row>
+    <el-col :span="24">
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
+        <el-card :body-style="{ padding: '10px' }" shadow="hover">
+        <div slot="header" class="clearfix">
+            <span>个人信息</span>
+            <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" v-if="userform.name === this.$store.getters.name" type="text">编辑</el-button>
+        </div>
+        <img :src="userform.avatar" class="image">
+        <div style="padding: 14px;">
+            <p class="userinfo" style="font-weight: bold;font-size: medium;">{{ userform.alias }}</p>
+            <p class="userinfo"><i class="el-icon-location">  {{ userform.country }}</i></p>
+            <p class="userinfo" style="font-weight: bold;font-size: medium;">关于我</p>
+            <p class="userinfo">{{ userform.description }}</p>
+            <el-collapse>
+                <el-collapse-item title="更多信息" name="1">
+                    <el-table
+                    v-model="usertable"
+                    :data="usertable"
+                    style="width: 100%;" :show-header="false">
+                        <el-table-column
+                            prop="title"
+                            width="180">
+                        </el-table-column>
+                        <el-table-column
+                            prop="value"
+                            min-width="180">
+                        </el-table-column>
+                    </el-table>
+                </el-collapse-item>
+            </el-collapse>
+            <div class="usercenter">
+                <div class="userbtn">
+                    <span class="user-svg-container"><svg-icon icon-class="article" class="icon"/></span>
+                    <p class="userinfo">{{ userform.blog_count }}篇文章</p>
                 </div>
-                <img :src="userform.avatar" class="image">
-                <div style="padding: 14px;">
-                    <p class="userinfo" style="font-weight: bold;font-size: medium;">{{ userform.alias }}</p>
-                    <p class="userinfo"><i class="el-icon-location">  {{ userform.country }}</i></p>
-                    <p class="userinfo" style="font-weight: bold;font-size: medium;">关于我</p>
-                    <p class="userinfo">{{ userform.description }}</p>
-                    <el-collapse>
-                        <el-collapse-item title="更多信息" name="1">
-                            <el-table
-                            v-model="usertable"
-                            :data="usertable"
-                            style="width: 100%;" :show-header="false">
-                                <el-table-column
-                                    prop="title"
-                                    width="180">
-                                </el-table-column>
-                                <el-table-column
-                                    prop="value"
-                                    min-width="180">
-                                </el-table-column>
-                            </el-table>
-                        </el-collapse-item>
-                    </el-collapse>
-                    <div class="usercenter">
-                        <div class="userbtn">
-                            <span class="user-svg-container"><svg-icon icon-class="article" class="icon"/></span>
-                            <p class="userinfo">{{ userform.blog_count }}篇文章</p>
-                        </div>
-                        <div class="userbtn">
-                            <span class="user-svg-container"><svg-icon icon-class="watch" class="icon"/></span>
-                            <p class="userinfo">196关注</p>
-                        </div>
-                        <div class="userbtn">
-                            <span class="user-svg-container"><svg-icon icon-class="watcher" class="icon"/></span>
-                            <p class="userinfo">196关注者</p>
-                        </div>
-                        <div class="userbtn">
-                            <span class="user-svg-container"><svg-icon icon-class="mywatch" class="icon"/></span>
-                            <p class="userinfo">我的关注</p>
-                        </div>
-                    </div>
+                <div class="userbtn">
+                    <span class="user-svg-container"><svg-icon icon-class="watch" class="icon"/></span>
+                    <p class="userinfo">196关注</p>
                 </div>
-                </el-card>
-            </el-col>
-        </el-row>
-      </div>
-      <div class="user-right">
+                <div class="userbtn">
+                    <span class="user-svg-container"><svg-icon icon-class="watcher" class="icon"/></span>
+                    <p class="userinfo">196关注者</p>
+                </div>
+                <div class="userbtn">
+                    <span class="user-svg-container"><svg-icon icon-class="mywatch" class="icon"/></span>
+                    <p class="userinfo">我的关注</p>
+                </div>
+            </div>
+        </div>
+        </el-card>
+      </el-col>
+      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
         <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="hover">
             <div slot="header" class="clearfix">
                 <span>最新动态</span>
@@ -87,7 +85,7 @@
                 </el-card> 
             </div>
         </el-card>
-      </div>
+      </el-col>
       <el-dialog title="个人资料" :visible.sync="usereditdialog" center width="50%">
         <el-form :model="userform">
             <el-form-item label="昵称" label-width="80px">
@@ -130,6 +128,8 @@
             <el-button type="primary" v-loading="usereditloading" @click="edituserinfo">确 定</el-button>
         </div>
         </el-dialog>
+    </el-col>
+    </el-row>
   </div>
 </template>
 
@@ -336,7 +336,7 @@ export default {
 <style>
 .user-container{
     margin: 10px;
-    background-color: #676a6c; 
+    background-color: #e7eaec; 
 }
 .user-left{
     width: 35%;

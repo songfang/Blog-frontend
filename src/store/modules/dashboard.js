@@ -5,6 +5,7 @@ import {
     get_blog_tags_data,
     get_blog_domain_data,
     get_version_list,
+    get_location_info,
 } from '@/api/dashboard'
 import {
     getToken,
@@ -120,6 +121,22 @@ const dashboard = {
                 })
             })
         },
+
+        /**
+         * 获取位置信息
+         * @param {*} param0 
+         */
+        get_location_info({ commit, state }) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_location_info(state.token, state.name).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        }
     }
 }
 
