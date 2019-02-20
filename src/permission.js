@@ -14,14 +14,14 @@ function hasPermission(roles, permissionRoles) {
     return roles.some(role => permissionRoles.indexOf(role) >= 0)
 }
 
-const whiteList = ['/login', '/register', '/emailresetpassword', '/auth-redirect'] // no redirect whitelist
+const whiteList = ['/login', '/register', '/emailresetpassword', '/auth-redirect', '/home'] // no redirect whitelist
 
 router.beforeEach((to, from, next) => {
     NProgress.start() // start progress bar
     if (getToken()) { // determine if there has token
         /* has token*/
         if (to.path === '/login') {
-            next({ path: '/' })
+            next({ path: '/dashboard' })
             NProgress.done() // if current page is dashboard will not trigger	afterEach hook, so manually handle it
         } else {
             if (store.getters.roles.length === 0) { // 判断当前用户是否已拉取完user_info信息

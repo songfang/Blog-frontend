@@ -7,6 +7,7 @@ import tagsView from './modules/tagsView'
 import user from './modules/user'
 import article from './modules/article'
 import dashboard from './modules/dashboard'
+// import messages from './modules/messages'
 import getters from './getters'
 
 Vue.use(Vuex)
@@ -20,6 +21,7 @@ const store = new Vuex.Store({
         user,
         article,
         dashboard,
+        // messages,
     },
     getters
 })

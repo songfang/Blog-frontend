@@ -26,5 +26,14 @@ const getters = {
     image_uri: state => state.article.image_uri,
     comments_disabled: state => state.article.comments_disabled,
     groups_list: state => state.user.groups_list,
+    percent_list: state => state.dashboard.percent_list,
+    blog_count: state => state.dashboard.blog_count,
+    blog_browse_count: state => state.dashboard.blog_browse_count,
+    blog_collect_count: state => state.dashboard.blog_collect_count,
+    blog_messages_count: state => state.dashboard.blog_messages_count,
+    messags_list: state => state.user.messages_list,
+    messags_total: state => state.user.messags_total,
+    unread_messages_list: state => state.user.unread_messages_list,
+    unread_messages_total: state => state.user.unread_messages_total,
 }
 export default getters

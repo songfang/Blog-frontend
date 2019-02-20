@@ -1,8 +1,8 @@
 <template>
-  <div class="blog-container" v-loading.fullscreen.lock="loading">
+  <div class="blog-container" v-loading="loading">
       <el-row>
         <el-col :span="24">
-            <el-row :gutter="0">
+            <el-row :gutter="10">
                 <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 16}" :xl="{span: 16}">
                     <el-card :body-style="{ padding: '0px' }" shadow="hover" v-if="bloglist.length >= 1">
                         <div slot="header" class="clearfix">
@@ -104,13 +104,15 @@
                 <el-card class="box-card">
                     <div class="blog-message">
                         <ul id="v-for-object" class="catalogue-container">
-                            <li  v-for="catalogue in catalogue_list" :key="catalogue">
-                                <el-tag type="warning" style="margin-bottom: 5px;">{{ catalogue }} </el-tag>
+                            <li  v-for="catalogue in catalogue_list" :key="catalogue.id">
+                                <el-tag type="warning" style="margin-bottom: 5px;">{{ catalogue.name }} </el-tag>
                             </li>
                         </ul>
                     </div>
                 </el-card>
             </el-card>
+            <div id="catalogue-pie" style="width: 100%;height: 200px;margin-top: 10px;"></div>
+    
             <el-card class="box-card" v-if="tags_list.length >= 1" :body-style="{ padding: '5px' }" shadow="hover">
                 <div slot="header" class="clearfix">
                     <router-link class="inlineBlock" :to="'/blog/tags/'">
@@ -119,10 +121,11 @@
                 </div>
                 <el-card class="box-card">
                     <div class="blog-message">
-                        <el-tag type="success" style="margin-right: 5px;margin-bottom: 5px;" v-for="tag in tags_list" :key="tag">{{ tag }} </el-tag>
+                        <el-tag type="success" style="margin-right: 5px;margin-bottom: 5px;" v-for="tag in tags_list" :key="tag.id">{{ tag.name }} </el-tag>
                     </div>
                 </el-card>
             </el-card>
+            <div id="tags-pie" style="width: 100%;height: 600px;margin-top: 10px;"></div>
             </el-col>
             </el-row>
         </el-col>
@@ -131,6 +134,12 @@
 </template>
 
 <script>
+
+var echarts = require('echarts');
+// 引入柱状图
+require('echarts/lib/chart/bar');
+// 引入提示框和标题组件
+require('echarts/lib/component/tooltip');
 
 export default {
   name: 'Info',
@@ -146,13 +155,20 @@ export default {
             page: 1,
             limit: 20
         },
-        tags_list:[],
         catalogue_list: [],
         blogtoplist: [],
+        catalogue_name_list: [],
+        catalogue_count_list: [],
+        tags_list:[],
+        tags_name_list: [],
+        tags_count_list: [],
     }
   },
   created(){
       this.getbloglist();
+  },
+  mounted(){
+      
   },
   watch: {
     $route: {
@@ -174,11 +190,21 @@ export default {
         })
         this.$store.dispatch('get_catalogue_list', this.listQuery).then(res => {
           this.catalogue_list = res.data
+          this.catalogue_list.forEach(items => {
+             this.catalogue_name_list.push(items.name)
+             this.catalogue_count_list.push({"name": items.name, "value": items.value})  
+          });
+          this.echartPie('catalogue-pie', this.catalogue_name_list, this.catalogue_count_list)
         }).catch((error) => {
           console.log(error)
         })
       this.$store.dispatch('get_tags_list', this.listQuery).then(res => {
           this.tags_list = res.data
+          this.tags_list.forEach(items => {
+              this.tags_name_list.push(items.name)
+              this.tags_count_list.push({"name": items.name, "value": items.value})
+          });
+          this.echartPie('tags-pie', this.tags_name_list, this.tags_count_list)
         }).catch((error) => {
           console.log(error)
         })
@@ -197,7 +223,90 @@ export default {
         console.log(`当前页: ${val}`);
         this.listQuery.page = val
         this.getbloglist()
-    }
+    },
+    echartPie(containerid, name_list, count_list) { // 饼状图的相关配置与事件 
+        // 1. 默认选中了某一个
+        // 2. 鼠标离开记录上次选中的作为当前选中的
+        var echarts = require('echarts');
+        // 基于准备好的dom，初始化echarts实例
+        var myChart = echarts.init(document.getElementById(containerid));
+        // 不能在单个容器上初始化多个 ECharts 实例。
+        //实例容器，一般是一个具有高宽的div元素。
+
+        var option = {
+            tooltip: {
+                trigger: 'item',
+                formatter: "{a} <br/>{b}: {c} ({d}%)"
+            },
+            legend: {
+                orient: 'vertical',
+                x: 'left',
+                data: name_list
+            },
+            series: [
+                {
+                    name:'文章统计',
+                    type:'pie',
+                    radius: ['50%', '70%'],
+                    avoidLabelOverlap: false,
+                    label: {
+                        normal: {
+                            show: false,
+                            position: 'center'
+                        },
+                        emphasis: {
+                            show: true,
+                            textStyle: {
+                                fontSize: '15',
+                                fontWeight: 'bold'
+                            }
+                        }
+                    },
+                    labelLine: {
+                        normal: {
+                            show: false
+                        }
+                    },
+                    data: count_list
+                }
+            ]
+        };
+
+        myChart.setOption(option);
+        init(0);
+
+        function init(index) {
+            myChart.dispatchAction({
+                type: 'highlight',
+                seriesIndex: 0,
+                dataIndex: index
+            });
+        }
+        //记录上次高亮的索引
+        var lastMouseOverIndex = null;
+        // mouseover事件，记录当前数据索引并取消其他高亮，over在out之后
+        myChart.on('mouseover', function(params) {
+            var dataLen = option.series[0].data.length;
+            lastMouseOverIndex = params.dataIndex;
+            for(var i = 0; i < dataLen; i++) {
+                if(i != params.dataIndex) {
+                    myChart.dispatchAction({
+                        type: 'downplay',
+                        seriesIndex: 0,
+                        dataIndex: i
+                    })
+                }
+            }
+        });
+        // mouseout事件，将上次的高亮
+        myChart.on('mouseout', function(params) {
+            myChart.dispatchAction({
+                type: 'highlight',
+                seriesIndex: 0,
+                dataIndex: lastMouseOverIndex
+            })
+        });
+    },
   },
   computed:{
     filterbloglist: function(){

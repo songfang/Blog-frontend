@@ -33,9 +33,6 @@
           <div :style="{height:'500px',width:'100%'}" ref="myEchart" v-loading="map_loading"></div>
         </div>
       </el-col>
-      <!-- <el-col :xs="{span: 24}" :sm="{span: 12}" :md="{span: 12}" :lg="{span: 6}" :xl="{span: 6}" style="margin-bottom:30px;">
-        <todo-list/>
-      </el-col> -->
       <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 8}" :xl="{span: 8}" style="margin-bottom:30px;">
         <box-card/>
       </el-col>

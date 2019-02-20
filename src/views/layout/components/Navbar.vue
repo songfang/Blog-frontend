@@ -8,18 +8,22 @@
       <template v-if="device!=='mobile'">
         <error-log class="errLog-container right-menu-item"/>
 
-        <el-tooltip :content="$t('navbar.screenfull')" effect="dark" placement="bottom">
+        <el-tooltip content="全屏" effect="dark" placement="bottom">
           <screenfull class="screenfull right-menu-item"/>
         </el-tooltip>
 
-        <el-tooltip :content="$t('navbar.size')" effect="dark" placement="bottom">
+        <el-tooltip content="选择尺寸" effect="dark" placement="bottom">
           <size-select class="international right-menu-item"/>
         </el-tooltip>
 
         <lang-select class="international right-menu-item"/>
 
-        <el-tooltip :content="$t('navbar.theme')" effect="dark" placement="bottom">
+        <el-tooltip content="选择主题" effect="dark" placement="bottom">
           <theme-picker class="theme-switch right-menu-item"/>
+        </el-tooltip>
+
+        <el-tooltip content="消息通知" effect="dark" placement="bottom" @click.native="show_messages">
+            <messages class="message right-menu-item"/>
         </el-tooltip>
       </template>
 
@@ -30,16 +34,23 @@
         </div>
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
-            <el-dropdown-item>
+            <el-dropdown-item class="dropdown-item">
               首页
             </el-dropdown-item>
           </router-link>
           <router-link class="inlineBlock" to="/user/info">
-            <el-dropdown-item>
+            <el-dropdown-item class="dropdown-item">
               个人信息
             </el-dropdown-item>
           </router-link>
-          <el-dropdown-item divided>
+          <router-link class="inlineBlock" to="/messages/list">
+            <el-dropdown-item class="dropdown-item">
+              <span>个人消息</span>
+              <el-badge :value="unread_messages_total" :max="99" class="item-badge">
+              </el-badge>
+            </el-dropdown-item>
+          </router-link>
+          <el-dropdown-item divided class="dropdown-item">
             <span style="display:block;" @click="logout">告退</span>
           </el-dropdown-item>
         </el-dropdown-menu>
@@ -57,6 +68,8 @@ import Screenfull from '@/components/Screenfull'
 import SizeSelect from '@/components/SizeSelect'
 import LangSelect from '@/components/LangSelect'
 import ThemePicker from '@/components/ThemePicker'
+import Messages from '@/components/Messages'
+import bus from '@/main.js'
 
 export default {
   components: {
@@ -66,14 +79,23 @@ export default {
     Screenfull,
     SizeSelect,
     LangSelect,
-    ThemePicker
+    ThemePicker,
+    Messages,
+  },
+  data(){
+    return {
+    }
+  },
+  mounted: function() {
   },
   computed: {
     ...mapGetters([
       'sidebar',
       'name',
       'avatar',
-      'device'
+      'device',
+      'unread_messages_list',
+      'unread_messages_total',
     ])
   },
   methods: {
@@ -84,7 +106,10 @@ export default {
       this.$store.dispatch('LogOut').then(() => {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
-    }
+    },
+    show_messages: function(){
+      bus.$emit('show_messages', true)
+    },
   }
 }
 </script>
@@ -92,7 +117,7 @@ export default {
 <style rel="stylesheet/scss" lang="scss" scoped>
 .navbar {
   height: 50px;
-  line-height: 50px;
+  line-height: 20px;
   border-radius: 0px !important;
   .hamburger-container {
     line-height: 58px;
@@ -119,12 +144,19 @@ export default {
     }
     .screenfull {
       height: 20px;
+      vertical-align: center;
     }
     .international{
-      vertical-align: top;
+      vertical-align: 15px;
     }
     .theme-switch {
       vertical-align: 15px;
+      vertical-align: center;
+    }
+    .message{
+      vertical-align: 15px;
+      vertical-align: center;
+      margin: 0px 25px 0px 0px;
     }
     .avatar-container {
       height: 50px;
@@ -148,5 +180,20 @@ export default {
       }
     }
   }
+.el-dropdown-link {
+    cursor: pointer;
+    color: #409EFF;
+  }
+  .el-icon-arrow-down {
+    font-size: 12px;
+  }
 }
+.dropdown-item{
+  width: 160px;
+}
+.item-badge{
+  margin-top: 5px;
+  margin-right: 10px;
+}
+
 </style>

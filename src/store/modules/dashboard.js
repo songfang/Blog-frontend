@@ -16,6 +16,11 @@ const dashboard = {
     state: {
         token: getToken(),
         name: getName(),
+        percent_list: [],
+        blog_count: "",
+        blog_browse_count: "",
+        blog_collect_count: "",
+        blog_messages_count: "",
     },
 
     mutations: {
@@ -24,6 +29,21 @@ const dashboard = {
         },
         SET_NAME: (state, name) => {
             state.name = name
+        },
+        SET_PERCENT: (state, percent_list) => {
+            state.percent_list = percent_list
+        },
+        SET_BLOG_COUNT: (state, count) => {
+            state.blog_count = count
+        },
+        SET_BLOG_BROWSE_COUNT: (state, count) => {
+            state.blog_browse_count = count
+        },
+        SET_BLOG_COLLECT_COUNT: (state, count) => {
+            state.blog_collect_count = count
+        },
+        SET_MESSAGES_COUNT: (state, count) => {
+            state.blog_messages_count = count
         },
     },
 
@@ -37,6 +57,10 @@ const dashboard = {
             commit('SET_NAME', getName())
             return new Promise((resolve, reject) => {
                 get_blog_data(state.token, state.name).then(response => {
+                    commit('SET_BLOG_COUNT', response.data.blog_count)
+                    commit('SET_BLOG_BROWSE_COUNT', response.data.blog_browse)
+                    commit('SET_BLOG_COLLECT_COUNT', response.data.blog_collect)
+                    commit('SET_MESSAGES_COUNT', response.data.messages_count)
                     resolve(response)
                 }).catch(error => {
                     reject(error)
@@ -85,6 +109,7 @@ const dashboard = {
             commit('SET_NAME', getName())
             return new Promise((resolve, reject) => {
                 get_blog_tags_data(state.token, state.name).then(response => {
+                    commit('SET_PERCENT', response.percent)
                     resolve(response)
                 }).catch(error => {
                     reject(error)

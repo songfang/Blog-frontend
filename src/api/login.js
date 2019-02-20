@@ -180,13 +180,13 @@ export function editUserInfo(data) {
 /**
  * 获取用户动态
  */
-export function get_user_message() {
+export function get_user_message(query) {
     let token = getToken()
     let username = getName()
     let qs = require('qs')
     let timestamp = new Date().getTime().toString()
     const sign = get_sign(token, timestamp)
-    let params = {};
+    let params = query;
     params["token"] = token
     params["username"] = username
     params["timestamp"] = timestamp
@@ -311,6 +311,165 @@ export function add_groups(token, username, data) {
     params["sign"] = sign
     return request({
         url: '/users/addgroups/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 获取当前用户所有消息
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} query 
+ */
+export function get_messags_list(token, username, query) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = query
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/list/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 用户阅读消息
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} query 
+ */
+export function read_messages(token, username, messages_id) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/read/' + messages_id + "/",
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 用于读取所有消息
+ * @param {*} token 
+ * @param {*} username 
+ */
+export function read_all_messages(token, username) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/readall/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 删除用户消息
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} messages_id 
+ */
+export function del_messages(token, username, messages_id) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/del/' + messages_id + "/",
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 删除所有用户消息
+ * @param {*} token 
+ * @param {*} username 
+ */
+export function del_all_messages(token, username) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/delall/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 获取messages信息
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} messages_id 
+ */
+export function get_messages(token, username, messages_id) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/info/' + messages_id + "/",
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 获取未读的消息
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} query 
+ */
+export function get_unread_messages_list(token, username, query) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = query
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/messages/unlist/',
         method: 'post',
         dataType: 'json',
         data: qs.stringify(params)

@@ -1,91 +1,107 @@
 <template>
-  <div class="user-container" v-loading.fullscreen.lock="loading">
+  <div class="user-container" v-loading="loading">
     <el-row>
     <el-col :span="24">
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
-        <el-card :body-style="{ padding: '10px' }" shadow="hover">
-        <div slot="header" class="clearfix">
-            <span>个人信息</span>
-            <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" v-if="userform.name === this.$store.getters.name" type="text">编辑</el-button>
-        </div>
-        <img :src="userform.avatar" class="image">
-        <div style="padding: 14px;">
-            <p class="userinfo" style="font-weight: bold;font-size: medium;">{{ userform.alias }}</p>
-            <p class="userinfo"><i class="el-icon-location">  {{ userform.country }}</i></p>
-            <p class="userinfo" style="font-weight: bold;font-size: medium;">关于我</p>
-            <p class="userinfo">{{ userform.description }}</p>
-            <el-collapse>
-                <el-collapse-item title="更多信息" name="1">
-                    <el-table
-                    v-model="usertable"
-                    :data="usertable"
-                    style="width: 100%;" :show-header="false">
-                        <el-table-column
-                            prop="title"
-                            width="180">
-                        </el-table-column>
-                        <el-table-column
-                            prop="value"
-                            min-width="180">
-                        </el-table-column>
-                    </el-table>
-                </el-collapse-item>
-            </el-collapse>
-            <div class="usercenter">
-                <div class="userbtn">
-                    <span class="user-svg-container"><svg-icon icon-class="article" class="icon"/></span>
-                    <p class="userinfo">{{ userform.blog_count }}篇文章</p>
+        <el-row :gutter="10">
+            <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
+                <el-card :body-style="{ padding: '10px' }" shadow="hover">
+                <div slot="header" class="clearfix">
+                    <span>个人信息</span>
+                    <el-button style="float: right; padding: 3px 0" @click="usereditdialog = true" v-if="userform.name === this.$store.getters.name" type="text">编辑</el-button>
                 </div>
-                <div class="userbtn">
-                    <span class="user-svg-container"><svg-icon icon-class="watch" class="icon"/></span>
-                    <p class="userinfo">196关注</p>
-                </div>
-                <div class="userbtn">
-                    <span class="user-svg-container"><svg-icon icon-class="watcher" class="icon"/></span>
-                    <p class="userinfo">196关注者</p>
-                </div>
-                <div class="userbtn">
-                    <span class="user-svg-container"><svg-icon icon-class="mywatch" class="icon"/></span>
-                    <p class="userinfo">我的关注</p>
-                </div>
-            </div>
-        </div>
-        </el-card>
-      </el-col>
-      <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
-        <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="hover">
-            <div slot="header" class="clearfix">
-                <span>最新动态</span>
-            </div>
-            <div v-for="message in message_list" :key="message.id">
-                <el-card class="box-card">
-                    <div class="user-message">
-                        <div class="user-img">
-                            <img :src="userform.avatar" class="img-circle">
+                <img :src="userform.avatar" class="image">
+                <div style="padding: 14px;">
+                    <p class="userinfo" style="font-weight: bold;font-size: medium;">{{ userform.alias }}</p>
+                    <p class="userinfo"><i class="el-icon-location">  {{ userform.country }}</i></p>
+                    <p class="userinfo" style="font-weight: bold;font-size: medium;">关于我</p>
+                    <p class="userinfo">{{ userform.description }}</p>
+                    <el-collapse>
+                        <el-collapse-item title="更多信息" name="1">
+                            <el-table
+                            v-model="usertable"
+                            :data="usertable"
+                            style="width: 100%;" :show-header="false">
+                                <el-table-column
+                                    prop="title"
+                                    width="180">
+                                </el-table-column>
+                                <el-table-column
+                                    prop="value"
+                                    min-width="180">
+                                </el-table-column>
+                            </el-table>
+                        </el-collapse-item>
+                    </el-collapse>
+                    <div class="usercenter">
+                        <div class="userbtn">
+                            <span class="user-svg-container"><svg-icon icon-class="article" class="icon"/></span>
+                            <p class="userinfo">{{ userform.blog_count }}篇文章</p>
                         </div>
-                        <div class="clearfix">
-                            <div class="user-content">
-                                <div class="user-content-header">
-                                    <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.operator }}</span>
-                                    <span class="userinfo">{{ message.action }}</span>
-                                    <span class="userinfo" v-if="message.target" style="font-weight: bold;font-size: small;">{{ message.target }}</span>
-                                    <span class="userinfo-time" style="font-weight: bold;font-size: small;">{{ message.created_time }}</span>
-                                </div>
-                                <div class="user-content-body">
-                                    <code class="userinfo" v-if="message.target !== '' && message.image_list.length < 1">
-                                        <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_old }}</span>
-                                        <span class="userinfo">  变更为  </span>
-                                        <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_new }}</span>
-                                    </code>
-                                    <img :src="item.value" v-for="item in message.image_list" :key="item.id"  class="feed-photo">
-                                </div>
-                            </div>
+                        <div class="userbtn">
+                            <span class="user-svg-container"><svg-icon icon-class="watch" class="icon"/></span>
+                            <p class="userinfo">196关注</p>
+                        </div>
+                        <div class="userbtn">
+                            <span class="user-svg-container"><svg-icon icon-class="watcher" class="icon"/></span>
+                            <p class="userinfo">196关注者</p>
+                        </div>
+                        <div class="userbtn">
+                            <span class="user-svg-container"><svg-icon icon-class="mywatch" class="icon"/></span>
+                            <p class="userinfo">我的关注</p>
                         </div>
                     </div>
-                </el-card> 
-            </div>
-        </el-card>
-      </el-col>
+                </div>
+                </el-card>
+            </el-col>
+            <el-col :xs="{span: 24}" :sm="{span: 24}" :md="{span: 24}" :lg="{span: 12}" :xl="{span: 12}">
+                <el-card class="box-card" :body-style="{ padding: '5px' }" shadow="hover">
+                    <div slot="header" class="clearfix">
+                        <span>最新动态</span>
+                    </div>
+                    <timeline timeline-theme="lightblue">
+                        <div v-for="message in message_list" :key="message.id">
+                            <timeline-item class="timeline-item">
+                                <img src="/static/img/message.png" class="icon-heart" slot="others">
+                                <div class="cd-timeline-content">
+                                    <el-col :span="24">
+                                        <el-card shadow="none" style="margin: 0px;border: 0px;background-color:#F5F5F5;">
+                                            <div class="user-message">
+                                                <div class="user-img">
+                                                    <img :src="userform.avatar" class="img-circle">
+                                                </div>
+                                                <div class="clearfix">
+                                                    <div class="user-content">
+                                                        <div class="user-content-header">
+                                                            <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.alias }}</span>
+                                                            <span class="userinfo">{{ message.action.zh }}</span>
+                                                            <span class="userinfo" v-if="message.target" style="font-weight: bold;font-size: small;">{{ message.target.zh }}</span>
+                                                            <span class="userinfo-time" style="font-weight: bold;font-size: small;">{{ message.created_time }}</span>
+                                                        </div>
+                                                        <div class="user-content-body">
+                                                            <code class="userinfo" v-if="message.target !== '' && message.image_list.length < 1">
+                                                                <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_old }}</span>
+                                                                <span class="userinfo">  变更为  </span>
+                                                                <span class="userinfo" style="font-weight: bold;font-size: small;">{{ message.msg_new }}</span>
+                                                            </code>
+                                                            <img :src="item.value" v-for="item in message.image_list" :key="item.id"  class="feed-photo">
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </el-card>
+                                    </el-col>
+                                </div>
+                            </timeline-item>
+                        </div>
+                        <div class="contaner-more">
+                            <router-link class="inlineBlock" to="/messages/logs">
+                                <el-button type="primary" plain size="mini"> >> 查看所有消息</el-button>
+                            </router-link>
+                        </div>
+                    </timeline>
+            </el-card>
+        </el-col>
+        </el-row>
       <el-dialog title="个人资料" :visible.sync="usereditdialog" center width="50%">
         <el-form :model="userform">
             <el-form-item label="昵称" label-width="80px">
@@ -135,8 +151,14 @@
 
 <script>
 import { uploadFiles } from '@/api/login'
+import { Timeline, TimelineItem, TimelineTitle } from 'vue-cute-timeline'
 
 export default {
+  components: {
+    Timeline,
+    TimelineItem,
+    TimelineTitle
+  },
   name: 'Info',
   data(){
     return {
@@ -274,58 +296,7 @@ export default {
     },
     get_user_message(){
         this.$store.dispatch('get_user_message').then(res => {
-            res.data.forEach(items => {
-                let action = ''
-                if(items.action === 'add'){
-                    action = '添加'
-                }else if(items.action === 'edit'){
-                    action = '编辑'
-                }else if(items.action === 'delete'){
-                    action = '删除'
-                }else if(items.action === 'view'){
-                    action = '浏览'
-                }else if(items.action === 'resetpassword'){
-                    action = '重置密码'
-                }else if(items.action === 'register'){
-                    action = '注册'
-                }else if(items.action === 'login'){
-                    action = '登录'
-                }else if(items.action === 'logout'){
-                    action = '注销'
-                }else if(items.action === 'thumbsup'){
-                    action = '点赞'
-                }else if(items.action === 'collect'){
-                    action = '收藏'
-                }else if(items.action === 'comment'){
-                    action = '评论'
-                }else if(items.action === 'upload'){
-                    action = '上传'
-                }else if(items.action === 'publish'){
-                    action = '发布'
-                }else if(items.action === 'rollback'){
-                    action = '撤回'
-                }
-                let image_list = []
-                if(items.action === 'upload'){
-                    let data = {"id": items.id, "value": items.msg_new.split(',')}
-                    image_list.push(data)
-                }
-                let data = {
-                    "id": items.id, 
-                    "operator": items.alias, 
-                    "action": action,
-                    "target": items.target, 
-                    "msg_old": items.msg_old, 
-                    "msg_new": items.msg_new, 
-                    "updated_time": items.updated_time, 
-                    "created_time": items.created_time, 
-                    "is_successed": items.is_successed,
-                    "is_read": items.is_read,
-                    "is_running": items.is_running,
-                    "image_list": image_list,
-                }
-                this.message_list.push(data)
-            });
+            this.message_list = res.data
         })
     }
   }
@@ -364,7 +335,7 @@ export default {
 
 .userinfo-time{
     margin: 0px;
-    width: 20%;
+    width: 200px;
     font-size: small; 
     float: right;
     text-align: right;
@@ -412,7 +383,8 @@ export default {
     margin: 0px 0px 20px 0px;
 }
 .user-img{
-    width: 5%;
+    width: 20%;
+    height: 100%;
     float: left;
     left: 0px;
 }
@@ -440,7 +412,7 @@ export default {
 .img-circle {
     width: 100%;
     display: block;
-    border-radius:50%;
+    border-radius:0%;
 }
 
 .thumbs-up-container {
@@ -484,4 +456,63 @@ export default {
     margin-right: 10px;
     margin-bottom: 10px;
   }
+
+.cd-timeline-content {
+  width: 100%;
+  position: relative;
+  margin-left: 10px;
+  background: #F5F5F5;
+  padding: 0px;
+  box-shadow: 0 3px 0 darken(#e9f0f5, 5%);
+  clear: both;
+  content: "";
+  display: inline-block;
+  border-radius: 25px;
+}
+
+.cd-timeline-content::before {
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 100%;
+    height: 0;
+    width: 0;
+    border: 7px solid transparent;
+    border-right: 7px solid #F5F5F5;
+  }
+
+  .cd-timeline-content::after {
+    content: '';
+    position: absolute;
+    top: 16px;
+    right: 100%;
+    height: 0;
+    width: 0;
+    border: 7px solid transparent;
+    border-right: 7px solid #F5F5F5;
+  }
+
+.icon-heart {
+    width: 30px;
+  }
+
+.timeline-item{
+  border-bottom:0px; 
+  margin-top:0px; 
+  padding-bottom: 0px;
+}
+
+.cd-timeline-content{
+    border-radius: 0px;
+    margin-bottom: 10px;
+}
+
+.contaner-more{
+    width: 100%;
+    height: 30px;
+    font-size: 15px;
+    padding-left: 36px;
+    float: right;
+    margin-bottom: 20px;
+}
 </style>

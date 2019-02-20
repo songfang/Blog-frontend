@@ -1,5 +1,5 @@
 <template>
-  <div class="users-container" v-loading.fullscreen.lock="loading">
+  <div class="users-container" v-loading="loading">
       <div class="users-left">
         <el-row>
             <el-col :span="24">

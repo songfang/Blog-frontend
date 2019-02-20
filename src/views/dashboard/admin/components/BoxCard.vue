@@ -6,25 +6,13 @@
     <div style="position:relative;">
       <pan-thumb :image="avatar" class="panThumb"/>
       <mallki class-name="mallki-text" text="vue element ops"/>
-      <div style="padding-top:35px;" class="progress-item">
-        <span>Vue</span>
-        <el-progress :percentage="70"/>
-      </div>
-      <div class="progress-item">
-        <span>JavaScript</span>
-        <el-progress :percentage="18"/>
-      </div>
-      <div class="progress-item">
-        <span>Css</span>
-        <el-progress :percentage="12"/>
-      </div>
-      <div class="progress-item">
-        <span>ESLint</span>
-        <el-progress :percentage="100" status="success"/>
-      </div>
-      <div class="progress-item">
-        <span>Python</span>
-        <el-progress :percentage="100" status="success"/>
+      <div style="padding-top:35px;">
+        <div class="progress-item" 
+          v-for="percent in percent_list" 
+          v-bind:key="percent.name">
+          <span>{{ percent.name }}</span>
+          <el-progress :percentage="percent.value"/>
+        </div>
       </div>
     </div>
   </el-card>
@@ -59,7 +47,8 @@ export default {
     ...mapGetters([
       'name',
       'avatar',
-      'roles'
+      'roles',
+      'percent_list',
     ])
   }
 }

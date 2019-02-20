@@ -40,7 +40,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">消息</div>
-          <count-to :start-val="0" :end-val="message" :duration="3000" class="card-panel-num"/>
+          <count-to :start-val="0" :end-val="messages_count" :duration="3000" class="card-panel-num"/>
         </div>
       </div>
     </el-col>
@@ -57,7 +57,7 @@ export default {
   data(){
     return {
       blog_browse: 0,
-      message: 0,
+      messages_count: 0,
       blog_count: 0,
       blog_collect: 0,
     }
@@ -76,6 +76,7 @@ export default {
         this.blog_browse = res.data.blog_browse
         this.blog_count = res.data.blog_count
         this.blog_collect = res.data.blog_collect
+        this.messages_count = res.data.messages_count
       }).catch((error) => {
         console.log(error)
         this.loading = false

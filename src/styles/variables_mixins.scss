@@ -1,0 +1,50 @@
+// variables - colors
+$main-text: #7f8c97; // main text
+$link: #acb7c0; // anchor tags
+$background: #e9f0f5; // body background color
+$color-1: #303e49; // blue dark
+$color-3: #ffffff; // white
+$color-4: #75ce66; // green
+// variables - fonts
+$primary-font: 'Droid Serif',
+serif;
+$secondary-font: 'Open Sans',
+sans-serif;
+// mixins - rem fallback - credits: http://zerosixthree.se/
+@function calculateRem($size) {
+    $remSize: $size / 16px;
+    @return $remSize * 1rem;
+}
+
+@mixin font-size($size) {
+    font-size: $size;
+    font-size: calculateRem($size);
+}
+
+// mixins - border radius
+@mixin border-radius($radius:.25em) {
+    border-radius: $radius;
+}
+
+// layout - breakpoints
+$S: 320px;
+$M: 768px;
+$L: 1170px;
+// layout - media queries
+@mixin MQ($canvas) {
+    @if $canvas==S {
+        @media only screen and (min-width: $S) {
+            @content;
+        }
+    }
+    @else if $canvas==M {
+        @media only screen and (min-width: $M) {
+            @content;
+        }
+    }
+    @else if $canvas==L {
+        @media only screen and (min-width: $L) {
+            @content;
+        }
+    }
+}

@@ -12,6 +12,13 @@ import {
     edit_groups,
     del_groups,
     add_groups,
+    get_messags_list,
+    read_messages,
+    read_all_messages,
+    del_messages,
+    del_all_messages,
+    get_messages,
+    get_unread_messages_list,
 } from '@/api/login'
 import {
     getToken,
@@ -22,6 +29,7 @@ import {
     removeName,
     setUser
 } from '@/utils/auth'
+import store from '@/store'
 
 const user = {
     state: {
@@ -50,6 +58,10 @@ const user = {
         total: "",
         groups_list: [],
         groups_total: "",
+        messages_list: [],
+        messages_total: "",
+        unread_messages_list: [],
+        unread_messages_total: "",
     },
 
     mutations: {
@@ -119,6 +131,18 @@ const user = {
         SET_GROUPS_TOTAL: (state, total) => {
             state.groups_total = total
         },
+        SET_MESSAGES_LIST: (state, messages_list) => {
+            state.messages_list = messages_list
+        },
+        SET_MESSAGES_TOTAL: (state, total) => {
+            state.messages_total = total
+        },
+        SET_UNREAD_MESSAGES_LIST: (state, messages_list) => {
+            state.unread_messages_list = messages_list
+        },
+        SET_UNREAD_MESSAGES_TOTAL: (state, total) => {
+            state.unread_messages_total = total
+        },
     },
 
     actions: {
@@ -170,6 +194,7 @@ const user = {
                     commit('SET_EMAIL', data.email)
                     commit('SET_ALIAS', data.alias)
                     commit('SET_LASTLOGIN', data.last_login)
+
                     setToken(state.token)
                     setName(state.name)
                     setUser(JSON.stringify(data))
@@ -285,9 +310,9 @@ const user = {
         /**
          * 获取用户message
          */
-        get_user_message({ commit, state }) {
+        get_user_message({ commit, state }, query = {}) {
             return new Promise((resolve, reject) => {
-                get_user_message().then(response => {
+                get_user_message(query).then(response => {
                     resolve(response)
                 }).catch(error => {
                     reject(error)
@@ -393,7 +418,170 @@ const user = {
             })
         },
 
+        /**
+         * 获取用户消息
+         * @param {*} param0 
+         * @param {*} query 
+         */
+        get_messages_list({ commit, state }, query) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_messags_list(state.token, state.name, query).then(response => {
+                    const data = response.data
+                    const total = response.total
+                    commit('SET_MESSAGES_LIST', data)
+                    commit('SET_MESSAGES_TOTAL', total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
 
+        /**
+         * 用户阅读消息
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        read_messages({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            let messages_id = data["id"]
+            return new Promise((resolve, reject) => {
+                read_messages(state.token, state.name, messages_id).then(response => {
+                    let unread_messages_total = store.getters.unread_messages_total
+                    let unread_messages_list = store.getters.unread_messages_list
+                    unread_messages_list.forEach(items => {
+                        if (items.id === data.id) {
+                            unread_messages_list.pop(items)
+                            if (unread_messages_total >= 1) {
+                                unread_messages_total = unread_messages_total - 1
+                            } else {
+                                unread_messages_total = 0
+                            }
+                        }
+                    });
+                    commit('SET_UNREAD_MESSAGES_LIST', unread_messages_list)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', unread_messages_total)
+
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 读取所有消息
+         * @param {*} param0 
+         */
+        read_all_messages({ commit, state }) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                read_all_messages(state.token, state.name).then(response => {
+                    let unread_messages_total = ""
+                    let unread_messages_list = []
+                    commit('SET_UNREAD_MESSAGES_LIST', unread_messages_list)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', unread_messages_total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 删除用户消息
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        del_messages({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            let messages_id = data["id"]
+            return new Promise((resolve, reject) => {
+                del_messages(state.token, state.name, messages_id).then(response => {
+                    let unread_messages_total = store.getters.unread_messages_total
+                    let unread_messages_list = store.getters.unread_messages_list
+                    unread_messages_list.forEach(items => {
+                        if (items.id === data.id) {
+                            unread_messages_list.pop(items)
+                            if (unread_messages_total >= 1) {
+                                unread_messages_total = unread_messages_total - 1
+                            } else {
+                                unread_messages_total = 0
+                            }
+                        }
+                    });
+                    commit('SET_UNREAD_MESSAGES_LIST', unread_messages_list)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', unread_messages_total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 删除所有消息
+         * @param {*} param0 
+         */
+        del_all_messages({ commit, state }) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                del_all_messages(state.token, state.name).then(response => {
+                    let unread_messages_total = ""
+                    let unread_messages_list = []
+                    commit('SET_UNREAD_MESSAGES_LIST', unread_messages_list)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', unread_messages_total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 获取messages信息
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        get_messages({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            let messages_id = data["id"]
+            return new Promise((resolve, reject) => {
+                get_messages(state.token, state.name, messages_id).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 获取未读取的消息
+         * @param {*} param0 
+         * @param {*} query 
+         */
+        get_unread_messages_list({ commit, state }, query) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_unread_messages_list(state.token, state.name, query).then(response => {
+                    const data = response.data
+                    const total = response.total
+                    commit('SET_UNREAD_MESSAGES_LIST', data)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
     }
 }
 

@@ -73,10 +73,21 @@ export const constantRouterMap = [{
         hidden: true
     },
     {
+        path: '/home',
+        component: () =>
+            import ('@/views/dashboard/home'),
+        hidden: true
+    },
+    {
         path: '',
         component: Layout,
-        redirect: 'dashboard',
+        redirect: 'home',
         children: [{
+            path: 'home',
+            hidden: true,
+            component: () =>
+                import ('@/views/dashboard/home'),
+        }, {
             path: 'dashboard',
             component: () =>
                 import ('@/views/dashboard/index'),
@@ -163,6 +174,37 @@ export const asyncRouterMap = [{
                 import ('@/views/user/groups'), // Parent router-view
             name: '用户组列表',
             meta: { title: '用户组列表', roles: ['admin'] },
+        }]
+    },
+    {
+        path: '/messages',
+        component: Layout,
+        redirect: '/messages/list',
+        name: '消息',
+        meta: {
+            title: '消息',
+            icon: 'message',
+            roles: ['editor', 'admin']
+        },
+        children: [{
+            path: 'list',
+            component: () =>
+                import ('@/views/user/messageslist'), // Parent router-view
+            name: '未读消息',
+            meta: { title: '未读消息', roles: ['editor', 'admin'] },
+        }, {
+            path: 'info/:id(\\d+)',
+            hidden: true,
+            component: () =>
+                import ('@/views/user/messagesinfo'), // Parent router-view
+            name: '消息详情',
+            meta: { title: '消息详情', roles: ['editor', 'admin'] },
+        }, {
+            path: 'logs',
+            component: () =>
+                import ('@/views/user/logs'), // Parent router-view
+            name: '操作日志',
+            meta: { title: '操作日志', roles: ['editor', 'admin'] },
         }]
     },
     {

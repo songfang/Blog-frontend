@@ -23,6 +23,20 @@ export default {
     TagsView
   },
   mixins: [ResizeMixin],
+    data() {
+      return {
+        listQuery: {
+          page: 1,
+          limit: 100,
+        }
+    }
+  },
+  created() {
+  
+  },
+  mounted: function(){
+    this.get_unread_messages_list()
+  },
   computed: {
     sidebar() {
       return this.$store.state.app.sidebar
@@ -42,7 +56,13 @@ export default {
   methods: {
     handleClickOutside() {
       this.$store.dispatch('closeSideBar', { withoutAnimation: false })
-    }
+    },
+    get_unread_messages_list() {
+      this.$store.dispatch('get_unread_messages_list', this.listQuery).then(res => {
+        const data = res.data
+        this.total = res.total
+      });
+    },
   }
 }
 </script>
