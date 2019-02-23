@@ -1,4 +1,11 @@
 import { asyncRouterMap, constantRouterMap } from '@/router'
+import {
+    getToken,
+    getName,
+} from '@/utils/auth'
+import {
+    get_user_menu,
+} from '@/api/login'
 
 /**
  * 通过meta.role判断是否与当前用户权限匹配
@@ -36,13 +43,27 @@ function filterAsyncRouter(routes, roles) {
 
 const permission = {
     state: {
+        token: getToken(),
+        name: getName(),
+        menu: [],
         routers: constantRouterMap,
+        menu: [],
         addRouters: []
     },
     mutations: {
+        SET_TOKEN: (state, token) => {
+            state.token = token
+        },
+        SET_NAME: (state, name) => {
+            state.name = name
+        },
         SET_ROUTERS: (state, routers) => {
             state.addRouters = routers
             state.routers = constantRouterMap.concat(routers)
+                // state.routers = constantRouterMap
+        },
+        SET_MENU: (state, menu) => {
+            state.menu = menu
         }
     },
     actions: {
@@ -59,7 +80,25 @@ const permission = {
                 commit('SET_ROUTERS', accessedRouters)
                 resolve()
             })
-        }
+        },
+
+        /**
+         * 创建用户菜单
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        get_user_menu({ commit, state }) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_user_menu(state.token, state.name).then(response => {
+                    commit('SET_MENU', response.data)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
     }
 }
 

@@ -23,7 +23,8 @@ export default {
   computed: {
     ...mapGetters([
       'permission_routers',
-      'sidebar'
+      'sidebar',
+      "menu",
     ]),
     isCollapse() {
       return !this.sidebar.opened

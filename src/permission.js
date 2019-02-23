@@ -28,9 +28,14 @@ router.beforeEach((to, from, next) => {
                 store.dispatch('GetUserInfo').then(res => { // 拉取user_info
                     const roles = res.roles // note: roles must be a array! such as: ['editor','develop']
                     store.dispatch('GenerateRoutes', { roles }).then(() => { // 根据roles权限生成可访问的路由表
-                        router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-                        next({...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-                    })
+                            router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+                            next({...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+                        })
+                        // store.dispatch('get_user_menu').then(() => {
+                        //     // router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+                        //     // // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+                        //     // next({...to, replace: true }) 
+                        // })
                 }).catch((err) => {
                     store.dispatch('FedLogOut').then(() => {
                         next({ path: '/' })

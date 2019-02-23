@@ -13,6 +13,7 @@ const getters = {
     roles: state => state.user.roles,
     setting: state => state.user.setting,
     permission_routers: state => state.permission.routers,
+    menu: state => state.permission.menu,
     addRouters: state => state.permission.addRouters,
     errorLogs: state => state.errorLog.logs,
     article_list: state => state.article.article_list,

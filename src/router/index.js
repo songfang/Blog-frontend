@@ -174,6 +174,18 @@ export const asyncRouterMap = [{
                 import ('@/views/user/groups'), // Parent router-view
             name: '用户组列表',
             meta: { title: '用户组列表', roles: ['admin'] },
+        }, {
+            path: 'template',
+            component: () =>
+                import ('@/views/user/menutemplate'), // Parent router-view
+            name: '菜单模板',
+            meta: { title: '菜单模板', roles: ['admin'] },
+        }, {
+            path: 'menulist',
+            component: () =>
+                import ('@/views/user/menu'), // Parent router-view
+            name: '菜单列表',
+            meta: { title: '菜单列表', roles: ['admin'] },
         }]
     },
     {

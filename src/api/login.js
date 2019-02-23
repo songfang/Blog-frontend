@@ -475,3 +475,72 @@ export function get_unread_messages_list(token, username, query) {
         data: qs.stringify(params)
     })
 }
+
+/**
+ * 获取用户menu
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} query 
+ */
+export function get_menu_list(token, username, query) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = query
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/users/listmenu/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}
+
+/**
+ * 编辑用户菜单
+ * @param {*} token 
+ * @param {*} username 
+ * @param {*} data
+ */
+export function edit_menu(token, username, data) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = data
+    let id = data["id"]
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/users/editmenu/' + id + "/",
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params, { arrayFormat: 'brackets' })
+    })
+}
+
+/**
+ * 获取用户菜单
+ * @param {*} token 
+ * @param {*} username 
+ */
+export function get_user_menu(token, username) {
+    let qs = require('qs')
+    let timestamp = new Date().getTime().toString()
+    const sign = get_sign(token, timestamp)
+    let params = {}
+    params["token"] = token
+    params["username"] = username
+    params["timestamp"] = timestamp
+    params["sign"] = sign
+    return request({
+        url: '/users/getmenu/',
+        method: 'post',
+        dataType: 'json',
+        data: qs.stringify(params)
+    })
+}

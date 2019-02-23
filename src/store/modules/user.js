@@ -19,6 +19,8 @@ import {
     del_all_messages,
     get_messages,
     get_unread_messages_list,
+    get_menu_list,
+    edit_menu,
 } from '@/api/login'
 import {
     getToken,
@@ -62,6 +64,8 @@ const user = {
         messages_total: "",
         unread_messages_list: [],
         unread_messages_total: "",
+        menu_list: [],
+        menu_total: "",
     },
 
     mutations: {
@@ -143,6 +147,13 @@ const user = {
         SET_UNREAD_MESSAGES_TOTAL: (state, total) => {
             state.unread_messages_total = total
         },
+        SET_MENU_LIST: (state, list) => {
+            state.menu_list = list
+        },
+        SET_MENU_TOTAL: (state, total) => {
+            state.menu_total = total
+        },
+
     },
 
     actions: {
@@ -582,6 +593,44 @@ const user = {
                 })
             })
         },
+
+        /**
+         * 获取用户menu
+         * @param {*} param0 
+         * @param {*} query 
+         */
+        get_menu_list({ commit, state }, query) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                get_menu_list(state.token, state.name, query).then(response => {
+                    const data = response.data
+                    const total = response.total
+                    commit('SET_UNREAD_MESSAGES_LIST', data)
+                    commit('SET_UNREAD_MESSAGES_TOTAL', total)
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        },
+
+        /**
+         * 修改菜单权限
+         * @param {*} param0 
+         * @param {*} data 
+         */
+        edit_menu({ commit, state }, data) {
+            commit('SET_TOKEN', getToken())
+            commit('SET_NAME', getName())
+            return new Promise((resolve, reject) => {
+                edit_menu(state.token, state.name, data).then(response => {
+                    resolve(response)
+                }).catch(error => {
+                    reject(error)
+                })
+            })
+        }
     }
 }
 
